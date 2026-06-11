@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.example</groupId>
+        <artifactId>metrics-config-service</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>metrics-config-deploy</artifactId>
+    <packaging>pom</packaging>
+    <name>metrics-config-deploy</name>
+    <description>指标配置后台服务 - 部署模块</description>
+
+    <properties>
+        <app.name>metrics-config-service</app.name>
+        <docker.registry>registry.example.com</docker.registry>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.13</version>
+                <executions>
+                    <execution>
+                        <id>build-image</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <repository>${docker.registry}/${app.name}</repository>
+                    <tag>${project.version}</tag>
+                    <tag>latest</tag>
+                    <buildArgs>
+                        <JAR_FILE>../app/target/${project.build.finalName}-exec.jar</JAR_FILE>
+                    </buildArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

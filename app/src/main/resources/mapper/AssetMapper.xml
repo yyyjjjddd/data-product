@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.metrics.mapper.AssetMapper">
+
+    <resultMap id="AssetResultMap" type="com.example.metrics.model.entity.Asset">
+        <id property="assetId" column="asset_id"/>
+        <result property="title" column="title"/>
+        <result property="uploader" column="uploader"/>
+        <result property="uploadedAt" column="uploaded_at"/>
+        <result property="fileSizeBytes" column="file_size_bytes"/>
+        <result property="status" column="status"/>
+        <result property="tags" column="tags"/>
+        <result property="city" column="city"/>
+        <result property="platform" column="platform"/>
+        <result property="durationSeconds" column="duration_seconds"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="AssetResultMap">
+        SELECT * FROM asset ORDER BY uploaded_at DESC
+    </select>
+
+    <select id="selectById" resultMap="AssetResultMap">
+        SELECT * FROM asset WHERE asset_id = #{assetId}
+    </select>
+
+    <select id="executeQuery" resultType="map">
+        ${sql}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM asset
+    </select>
+
+    <select id="selectByPagination" resultMap="AssetResultMap">
+        SELECT * FROM asset ORDER BY uploaded_at DESC LIMIT #{offset}, #{limit}
+    </select>
+
+</mapper>

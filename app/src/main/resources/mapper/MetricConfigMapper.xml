@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.metrics.mapper.MetricConfigMapper">
+
+    <resultMap id="MetricConfigResultMap" type="com.example.metrics.model.entity.MetricConfig">
+        <id property="id" column="id"/>
+        <result property="metricName" column="metric_name"/>
+        <result property="description" column="description"/>
+        <result property="sourceTable" column="source_table"/>
+        <result property="field" column="field"/>
+        <result property="aggregation" column="aggregation"/>
+        <result property="groupBy" column="group_by"/>
+        <result property="filterCondition" column="filter_condition"/>
+        <result property="sortRule" column="sort_rule"/>
+        <result property="enabled" column="enabled"/>
+        <result property="version" column="version"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.example.metrics.model.entity.MetricConfig"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO metric_config (metric_name, description, source_table, field, aggregation,
+                                   group_by, filter_condition, sort_rule, enabled, version,
+                                   created_at, updated_at)
+        VALUES (#{metricName}, #{description}, #{sourceTable}, #{field}, #{aggregation},
+                #{groupBy}, #{filterCondition}, #{sortRule}, #{enabled}, 0,
+                NOW(), NOW())
+    </insert>
+
+    <update id="updateById" parameterType="com.example.metrics.model.entity.MetricConfig">
+        UPDATE metric_config
+        SET metric_name = #{metricName},
+            description = #{description},
+            source_table = #{sourceTable},
+            field = #{field},
+            aggregation = #{aggregation},
+            group_by = #{groupBy},
+            filter_condition = #{filterCondition},
+            sort_rule = #{sortRule},
+            enabled = #{enabled},
+            version = version + 1,
+            updated_at = NOW()
+        WHERE id = #{id} AND version = #{version}
+    </update>
+
+    <update id="updateVersion">
+        UPDATE metric_config SET version = version + 1, updated_at = NOW()
+        WHERE id = #{id} AND version = #{version}
+    </update>
+
+    <select id="selectById" resultMap="MetricConfigResultMap">
+        SELECT * FROM metric_config WHERE id = #{id}
+    </select>
+
+    <select id="selectByName" resultMap="MetricConfigResultMap">
+        SELECT * FROM metric_config WHERE metric_name = #{metricName}
+    </select>
+
+    <select id="selectAll" resultMap="MetricConfigResultMap">
+        SELECT * FROM metric_config ORDER BY created_at DESC
+    </select>
+
+    <select id="selectByPage" resultMap="MetricConfigResultMap">
+        SELECT * FROM metric_config
+        <where>
+            <if test="enabled != null">
+                AND enabled = #{enabled}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (metric_name LIKE CONCAT('%', #{keyword}, '%')
+                OR description LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY created_at DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="countByCondition" resultType="long">
+        SELECT COUNT(*) FROM metric_config
+        <where>
+            <if test="enabled != null">
+                AND enabled = #{enabled}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (metric_name LIKE CONCAT('%', #{keyword}, '%')
+                OR description LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+    </select>
+
+    <update id="updateEnabled">
+        UPDATE metric_config
+        SET enabled = #{enabled}, version = version + 1, updated_at = NOW()
+        WHERE id = #{id} AND version = #{version}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM metric_config WHERE id = #{id}
+    </delete>
+
+    <!-- 根据指标配置执行动态查询 -->
+    <select id="executeMetricQuery" resultType="map">
+        SELECT
+        <if test="template.groupBy != null and template.groupBy != ''">
+            ${template.groupBy},
+        </if>
+        ${template.aggregation}(${template.field}) as value
+        FROM ${template.sourceTable}
+        <where>
+            <if test="template.filterCondition != null and template.filterCondition != ''">
+                ${template.filterCondition}
+            </if>
+        </where>
+        <if test="template.groupBy != null and template.groupBy != ''">
+            GROUP BY ${template.groupBy}
+        </if>
+        ORDER BY ${template.sortRule}
+    </select>
+
+</mapper>
