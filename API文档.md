@@ -101,8 +101,7 @@
     "metricName": "各城市素材数量",
     "enabled": true,
     "createdAt": "2026-06-04T10:00:00"
-  },
-  "timestamp": "2026-06-04T10:00:00"
+  }
 }
 ```
 
@@ -216,8 +215,7 @@
     "enabled": true,
     "createdAt": "2026-06-04T10:00:00",
     "updatedAt": "2026-06-04T10:00:00"
-  },
-  "timestamp": "2026-06-04T10:00:00"
+  }
 }
 ```
 
@@ -270,8 +268,7 @@
     "total": 3,
     "pageNum": 1,
     "pageSize": 20
-  },
-  "timestamp": "2026-06-04T10:00:00"
+  }
 }
 ```
 
@@ -306,8 +303,7 @@
 ```json
 {
   "code": 200,
-  "message": "success",
-  "timestamp": "2026-06-04T10:00:00"
+  "message": "success"
 }
 ```
 
@@ -341,8 +337,7 @@
 ```json
 {
   "code": 200,
-  "message": "success",
-  "timestamp": "2026-06-04T10:00:00"
+  "message": "success"
 }
 ```
 
@@ -373,7 +368,6 @@
 {
   "code": 200,
   "message": "success",
-  "timestamp": "2026-06-04T10:00:00"
 }
 ```
 
@@ -429,8 +423,7 @@
     "status": "pending",
     "retryCount": 0,
     "createdAt": "2026-06-04T10:00:00"
-  },
-  "timestamp": "2026-06-04T10:00:00"
+  }
 }
 ```
 
@@ -492,8 +485,7 @@
     "startTime": "2026-06-04T10:00:05",
     "retryCount": 0,
     "createdAt": "2026-06-04T10:00:00"
-  },
-  "timestamp": "2026-06-04T10:00:05"
+  }
 }
 ```
 
@@ -515,8 +507,7 @@
       {"city": "深圳", "value": 8}
     ],
     "createdAt": "2026-06-04T10:00:00"
-  },
-  "timestamp": "2026-06-04T10:00:06"
+  }
 }
 ```
 
@@ -534,8 +525,7 @@
     "retryCount": 3,
     "errorMessage": "SQL执行超时：查询超过30秒",
     "createdAt": "2026-06-04T10:00:00"
-  },
-  "timestamp": "2026-06-04T10:00:06"
+  }
 }
 ```
 
@@ -588,8 +578,7 @@
     "total": 10,
     "pageNum": 1,
     "pageSize": 20
-  },
-  "timestamp": "2026-06-04T10:00:00"
+  }
 }
 ```
 
@@ -661,8 +650,7 @@
     "total": 30,
     "pageNum": 1,
     "pageSize": 20
-  },
-  "timestamp": "2026-06-04T10:00:00"
+  }
 }
 ```
 
@@ -700,8 +688,7 @@
     "durationSeconds": 35,
     "createdAt": "2026-05-01T10:00:00",
     "updatedAt": "2026-05-01T10:00:00"
-  },
-  "timestamp": "2026-06-04T10:00:00"
+  }
 }
 ```
 
@@ -726,8 +713,7 @@
   "message": "success",
   "data": {
     "total": 30
-  },
-  "timestamp": "2026-06-04T10:00:00"
+  }
 }
 ```
 

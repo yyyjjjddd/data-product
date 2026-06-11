@@ -121,4 +121,127 @@ spring:
 mybatis:
   configuration:
     default-statement-timeout: 30  # SQL超时时间（秒）
-``
+```
+
+## API接口
+
+### 指标配置接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /api/v1/metrics/configs | 新增指标配置 |
+| PUT | /api/v1/metrics/configs/{id} | 更新指标配置 |
+| GET | /api/v1/metrics/configs/{id} | 获取指标配置详情 |
+| GET | /api/v1/metrics/configs | 获取指标配置列表（分页） |
+| PATCH | /api/v1/metrics/configs/{id}/enabled | 启用/停用指标配置 |
+| POST | /api/v1/metrics/configs/validate/{id} | 校验指标配置合法性 |
+| DELETE | /api/v1/metrics/configs/{id} | 删除指标配置 |
+
+### 任务接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /api/v1/tasks | 创建查询任务（异步） |
+| GET | /api/v1/tasks/{taskId} | 获取任务状态和结果 |
+| GET | /api/v1/tasks | 获取任务列表（分页） |
+
+### 素材接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /api/v1/assets | 获取素材列表（分页） |
+| GET | /api/v1/assets/{assetId} | 获取素材详情 |
+| GET | /api/v1/assets/stats | 获取素材统计摘要 |
+
+## 测试说明
+
+可以使用 curl 或 Postman 进行接口测试。
+
+### 创建指标配置
+
+```bash
+curl -X POST http://localhost:8080/api/v1/metrics/configs \
+  -H "Content-Type: application/json" \
+  -d '{
+    "metricName": "各平台素材数量",
+    "description": "统计各投放平台的素材数量",
+    "sourceTable": "asset",
+    "field": "asset_id",
+    "aggregation": "COUNT",
+    "groupBy": "platform",
+    "sortRule": "value DESC"
+  }'
+```
+
+### 创建查询任务
+
+```bash
+curl -X POST http://localhost:8080/api/v1/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"metricId": 1}'
+```
+
+响应：
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "taskId": "550e8400-e29b-41d4-a716-446655440000",
+    "metricId": 1,
+    "status": "pending",
+    "retryCount": 0,
+    "createdAt": "2026-06-11T10:00:00"
+  }
+}
+```
+
+### 查询任务状态
+
+```bash
+curl http://localhost:8080/api/v1/tasks/550e8400-e29b-41d4-a716-446655440000
+```
+
+响应（成功）：
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "taskId": "550e8400-e29b-41d4-a716-446655440000",
+    "metricId": 1,
+    "status": "success",
+    "startTime": "2026-06-11T10:00:01",
+    "endTime": "2026-06-11T10:00:02",
+    "resultData": [
+      {"platform": "抖音", "value": 12},
+      {"platform": "快手", "value": 10},
+      {"platform": "小红书", "value": 8}
+    ],
+    "createdAt": "2026-06-11T10:00:00"
+  }
+}
+```
+
+## 预置指标
+
+系统初始化了3个预置指标：
+
+| ID | 指标名称 | 说明 |
+|----|----------|------|
+| 1 | 按审核状态统计素材数量 | 统计各审核状态的素材数量 |
+| 2 | 各上传人平均文件大小 | 统计已通过审核素材中，各上传人的平均文件大小 |
+| 3 | 各城市素材数量 | 统计各城市的素材数量分布 |
+
+快速测试命令：
+```bash
+# 创建任务（使用预置指标1）
+curl -X POST http://localhost:8080/api/v1/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"metricId": 1}'
+
+# 等待2秒后查询结果
+curl http://localhost:8080/api/v1/tasks/{taskId}
+```
+
+
